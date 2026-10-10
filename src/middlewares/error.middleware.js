@@ -16,7 +16,12 @@ function gererErreur(error, req, res, next) {
 
     if (error.code === 11000) {
         status = 409;
-        message = "Cette immatriculation existe déjà.";
+
+        if (error.keyPattern && error.keyPattern.email) {
+            message = "Cet email est déjà utilisé.";
+        } else {
+            message = "Cette immatriculation existe déjà.";
+        }
     }
 
     if (status >= 500) {

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "init:admin": "node src/scripts/creer-admin.js"
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,11 @@
   },
   "homepage": "https://github.com/BloodyBry/gestion-flotte-api#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
+    "joi": "^18.2.9",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.4"
   },
   "devDependencies": {
