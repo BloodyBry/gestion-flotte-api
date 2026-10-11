@@ -8,7 +8,8 @@ const {
 } = require("../middlewares/auth.middleware");
 
 const {
-    creationCompteChauffeurSchema
+    creationCompteChauffeurSchema,
+    statutCompteSchema
 } = require("../validations/auth.validation");
 
 const router = express.Router();
@@ -19,6 +20,12 @@ router.post(
     "/",
     validerBody(creationCompteChauffeurSchema),
     utilisateurController.creerCompteChauffeur
+);
+
+router.patch(
+    "/:id/statut",
+    validerBody(statutCompteSchema),
+    utilisateurController.modifierStatutChauffeur
 );
 
 module.exports = router;

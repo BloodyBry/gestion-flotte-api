@@ -21,8 +21,16 @@ const creationCompteChauffeurSchema = Joi.object({
     motDePasse: Joi.string().min(8).required()
 });
 
+const statutCompteSchema = Joi.object({
+    actif: Joi.boolean().strict().required().messages({
+        "boolean.base":
+            "Le champ actif doit être true ou false, sans guillemets"
+    })
+});
+
 module.exports = {
     connexionSchema,
     refreshTokenSchema,
-    creationCompteChauffeurSchema
+    creationCompteChauffeurSchema,
+    statutCompteSchema
 };

@@ -62,8 +62,61 @@ async function creerCompteChauffeur(donnees = {}) {
     });
 }
 
+async function modifierStatutChauffeur(id, donnees = {}) {
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+        const erreur = new Error("Identifiant utilisateur invalide");
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    if (typeof donnees.actif !== "boolean") {
+        const erreur = new Error(
+            "Le champ actif doit être un booléen"
+        );
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    const modifications = {
+        actif: donnees.actif
+    };
+
+    if (donnees.actif === false) {
+        modifications.refreshTokenHash = null;
+    }
+
+    const utilisateur = await Utilisateur.findOneAndUpdate(
+        {
+            _id: id,
+            role: "chauffeur"
+        },
+        {
+            $set: modifications
+        },
+        {
+            returnDocument: "after",
+            runValidators: true
+        }
+    );
+
+    if (!utilisateur) {
+        const erreur = new Error("Compte chauffeur introuvable");
+        erreur.status = 404;
+        throw erreur;
+    }
+
+    return {
+        id: utilisateur._id,
+        nom: utilisateur.nom,
+        email: utilisateur.email,
+        role: utilisateur.role,
+        actif: utilisateur.actif
+    };
+}
+
 
 module.exports = {
     creerUtilisateur,
-    creerCompteChauffeur
+    creerCompteChauffeur,
+    modifierStatutChauffeur
 };
