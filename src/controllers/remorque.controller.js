@@ -45,9 +45,24 @@ async function modifierRemorque(req, res, next) {
     }
 }
 
+async function modifierArchivageRemorque(req, res, next) {
+    try {
+        const remorque =
+            await remorqueService.modifierArchivageRemorque(
+                req.params.id,
+                req.body
+            );
+
+        res.status(200).json(remorque);
+    } catch (erreur) {
+        next(erreur);
+    }
+}
+
 module.exports = {
     creerRemorque,
     listerRemorques,
     obtenirRemorque,
-    modifierRemorque
+    modifierRemorque,
+    modifierArchivageRemorque
 };

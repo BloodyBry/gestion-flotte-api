@@ -1,4 +1,5 @@
 const Camion = require("../models/camion.model");
+const construireFiltresVehicule = require("./vehicule-filtre.service");
 
 async function creerCamion(donnees = {}) {
     await Camion.init();
@@ -12,10 +13,10 @@ async function creerCamion(donnees = {}) {
     return camion;
 }
 
-async function listerCamions() {
-    const camions = await Camion.find();
+async function listerCamions(parametres = {}) {
+    const filtres = construireFiltresVehicule(parametres);
 
-    return camions;
+    return Camion.find(filtres);
 }
 
 async function obtenirCamion(id) {
@@ -66,11 +67,47 @@ async function modifierCamion(id, donnees = {}) {
     return camion;
 }
 
+async function modifierArchivageCamion(id, donnees = {}) {
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+        const erreur = new Error("Identifiant camion invalide");
+        erreur.status = 400;
+        throw erreur;
+    }
 
+    if (typeof donnees.archive !== "boolean") {
+        const erreur = new Error(
+            "Le champ archive doit être un booléen"
+        );
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    const camion = await Camion.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                archive: donnees.archive
+            }
+        },
+        {
+            returnDocument: "after",
+            runValidators: true
+        }
+    );
+
+    if (!camion) {
+        const erreur = new Error("Camion introuvable");
+        erreur.status = 404;
+        throw erreur;
+    }
+
+    return camion;
+}
 
 module.exports = {
     creerCamion,
     listerCamions,
     obtenirCamion,
-    modifierCamion
+    modifierCamion,
+    modifierArchivageCamion
 };

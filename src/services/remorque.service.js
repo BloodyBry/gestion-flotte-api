@@ -66,10 +66,48 @@ async function modifierRemorque(id, donnees = {}) {
     return remorque;
 }
 
+async function modifierArchivageRemorque(id, donnees = {}) {
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+        const erreur = new Error("Identifiant remorque invalide");
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    if (typeof donnees.archive !== "boolean") {
+        const erreur = new Error(
+            "Le champ archive doit être un booléen"
+        );
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    const remorque = await Remorque.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                archive: donnees.archive
+            }
+        },
+        {
+            returnDocument: "after",
+            runValidators: true
+        }
+    );
+
+    if (!remorque) {
+        const erreur = new Error("Remorque introuvable");
+        erreur.status = 404;
+        throw erreur;
+    }
+
+    return remorque;
+}
+
 
 module.exports = {
     creerRemorque,
     listerRemorques,
     obtenirRemorque,
-    modifierRemorque
+    modifierRemorque,
+    modifierArchivageRemorque
 };

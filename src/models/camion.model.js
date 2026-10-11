@@ -23,6 +23,10 @@ const camionSchema = new mongoose.Schema(
             type: String,
             enum: ["disponible", "maintenance"],
             default: "disponible"
+        },
+        archive: {
+            type: Boolean,
+            default: false
         }
     },
     {

@@ -12,11 +12,13 @@ async function creerCamion(req, res, next) {
 
 async function listerCamions(req, res, next) {
     try {
-        const camions = await camionService.listerCamions();
+        const camions = await camionService.listerCamions(
+            req.filtresVehicule
+        );
 
         res.status(200).json(camions);
-    } catch (error) {
-        next(error);
+    } catch (erreur) {
+        next(erreur);
     }
 }
 
@@ -44,11 +46,24 @@ async function modifierCamion(req, res, next) {
     }
 }
 
+async function modifierArchivageCamion(req, res, next) {
+    try {
+        const camion =
+            await camionService.modifierArchivageCamion(
+                req.params.id,
+                req.body
+            );
 
+        res.status(200).json(camion);
+    } catch (erreur) {
+        next(erreur);
+    }
+}
 
 module.exports = {
     creerCamion,
     listerCamions,
     obtenirCamion,
-    modifierCamion
+    modifierCamion,
+    modifierArchivageCamion
 };

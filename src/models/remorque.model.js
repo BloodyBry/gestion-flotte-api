@@ -20,10 +20,14 @@ const remorqueSchema = new mongoose.Schema(
             min: [0, "Le kilométrage ne peut pas être négatif"]
         },
         statut: {
-            type: String,
-            enum: ["disponible", "maintenance"],
-            default: "disponible"
-        }
+        type: String,
+        enum: ["disponible", "maintenance"],
+        default: "disponible"
+    },
+    archive: {
+        type: Boolean,
+        default: false
+    }
     },
     {
         timestamps: true

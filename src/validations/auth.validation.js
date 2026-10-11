@@ -28,9 +28,20 @@ const statutCompteSchema = Joi.object({
     })
 });
 
+const modificationCompteChauffeurSchema = Joi.object({
+    nom: Joi.string().trim().max(100),
+    email: emailSchema.optional()
+})
+    .min(1)
+    .messages({
+        "object.min":
+            "Vous devez renseigner au moins le nom ou l'email"
+    });
+
 module.exports = {
     connexionSchema,
     refreshTokenSchema,
     creationCompteChauffeurSchema,
-    statutCompteSchema
+    statutCompteSchema,
+    modificationCompteChauffeurSchema
 };

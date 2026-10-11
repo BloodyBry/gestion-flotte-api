@@ -19,6 +19,16 @@ function gererErreur(error, req, res, next) {
 
         if (error.keyPattern && error.keyPattern.email) {
             message = "Cet email est déjà utilisé.";
+        } else if (
+            error.keyPattern &&
+            error.keyPattern.utilisateur
+        ) {
+            message = "Ce compte possède déjà une fiche chauffeur.";
+        } else if (
+            error.keyPattern &&
+            error.keyPattern.numeroPermis
+        ) {
+            message = "Ce numéro de permis est déjà utilisé.";
         } else {
             message = "Cette immatriculation existe déjà.";
         }

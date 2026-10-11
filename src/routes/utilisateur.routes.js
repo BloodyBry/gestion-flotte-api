@@ -9,7 +9,8 @@ const {
 
 const {
     creationCompteChauffeurSchema,
-    statutCompteSchema
+    statutCompteSchema,
+    modificationCompteChauffeurSchema
 } = require("../validations/auth.validation");
 
 const router = express.Router();
@@ -22,10 +23,26 @@ router.post(
     utilisateurController.creerCompteChauffeur
 );
 
+router.get(
+    "/",
+    utilisateurController.listerComptesChauffeurs
+);
+
+router.get(
+    "/:id",
+    utilisateurController.obtenirCompteChauffeur
+);
+
 router.patch(
     "/:id/statut",
     validerBody(statutCompteSchema),
     utilisateurController.modifierStatutChauffeur
+);
+
+router.patch(
+    "/:id",
+    validerBody(modificationCompteChauffeurSchema),
+    utilisateurController.modifierCompteChauffeur
 );
 
 module.exports = router;

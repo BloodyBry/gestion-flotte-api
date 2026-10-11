@@ -5,6 +5,7 @@ const remorqueRoutes = require("./routes/remorque.routes");
 const authRoutes = require("./routes/auth.routes");
 const gererErreur = require("./middlewares/error.middleware");
 const utilisateurRoutes = require("./routes/utilisateur.routes");
+const chauffeurRoutes = require("./routes/chauffeur.routes");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use("/api/remorques", remorqueRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/utilisateurs", utilisateurRoutes);
+
+app.use("/api/chauffeurs", chauffeurRoutes);
 
 app.use(gererErreur);
 

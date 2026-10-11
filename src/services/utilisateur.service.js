@@ -63,11 +63,7 @@ async function creerCompteChauffeur(donnees = {}) {
 }
 
 async function modifierStatutChauffeur(id, donnees = {}) {
-    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
-        const erreur = new Error("Identifiant utilisateur invalide");
-        erreur.status = 400;
-        throw erreur;
-    }
+    verifierIdentifiantUtilisateur(id);
 
     if (typeof donnees.actif !== "boolean") {
         const erreur = new Error(
@@ -114,9 +110,76 @@ async function modifierStatutChauffeur(id, donnees = {}) {
     };
 }
 
+function verifierIdentifiantUtilisateur(id) {
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+        const erreur = new Error("Identifiant utilisateur invalide");
+        erreur.status = 400;
+        throw erreur;
+    }
+}
+
+async function listerComptesChauffeurs() {
+    return Utilisateur.find({
+        role: "chauffeur"
+    }).select("nom email role actif");
+}
+
+async function obtenirCompteChauffeur(id) {
+    verifierIdentifiantUtilisateur(id);
+
+    const utilisateur = await Utilisateur.findOne({
+        _id: id,
+        role: "chauffeur"
+    }).select("nom email role actif");
+
+    if (!utilisateur) {
+        const erreur = new Error("Compte chauffeur introuvable");
+        erreur.status = 404;
+        throw erreur;
+    }
+
+    return utilisateur;
+}
+
+async function modifierCompteChauffeur(id, donnees = {}) {
+    for (const champ of Object.keys(donnees)) {
+        if (champ !== "nom" && champ !== "email") {
+            const erreur = new Error(
+                "Seuls les champs nom et email sont autorisés"
+            );
+            erreur.status = 400;
+            throw erreur;
+        }
+    }
+
+    if (donnees.nom === undefined && donnees.email === undefined) {
+        const erreur = new Error(
+            "Vous devez renseigner au moins le nom ou l'email"
+        );
+        erreur.status = 400;
+        throw erreur;
+    }
+
+    const utilisateur = await obtenirCompteChauffeur(id);
+
+    if (donnees.nom !== undefined) {
+        utilisateur.nom = donnees.nom;
+    }
+
+    if (donnees.email !== undefined) {
+        utilisateur.email = donnees.email;
+    }
+
+    await utilisateur.save();
+
+    return utilisateur;
+}
 
 module.exports = {
     creerUtilisateur,
     creerCompteChauffeur,
-    modifierStatutChauffeur
+    modifierStatutChauffeur,
+    listerComptesChauffeurs,
+    obtenirCompteChauffeur,
+    modifierCompteChauffeur
 };
