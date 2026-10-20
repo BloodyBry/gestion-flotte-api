@@ -1,10 +1,10 @@
-const Camion = require("../models/camion.model");
 const construireFiltresVehicule = require("./vehicule-filtre.service");
+const camionRepository = require("../repositories/camion.repository");
 
 async function creerCamion(donnees = {}) {
-    await Camion.init();
 
-    const camion = await Camion.create({
+
+    const camion = await camionRepository.creerCamion({
         immatriculation: donnees.immatriculation,
         marque: donnees.marque,
         kilometrageTotal: donnees.kilometrageTotal
@@ -16,11 +16,11 @@ async function creerCamion(donnees = {}) {
 async function listerCamions(parametres = {}) {
     const filtres = construireFiltresVehicule(parametres);
 
-    return Camion.find(filtres);
+    return camionRepository.listerCamions(filtres);
 }
 
 async function obtenirCamion(id) {
-    const camion = await Camion.findById(id);
+    const camion = await camionRepository.obtenirCamion(id);
 
     if (!camion) {
         const error = new Error("Camion introuvable");
@@ -62,7 +62,7 @@ async function modifierCamion(id, donnees = {}) {
         camion.marque = donnees.marque;
     }
 
-    await camion.save();
+    await camionRepository.enregistrerCamion(camion);
 
     return camion;
 }
@@ -82,17 +82,9 @@ async function modifierArchivageCamion(id, donnees = {}) {
         throw erreur;
     }
 
-    const camion = await Camion.findByIdAndUpdate(
+    const camion = await camionRepository.modifierArchivageCamion(
         id,
-        {
-            $set: {
-                archive: donnees.archive
-            }
-        },
-        {
-            returnDocument: "after",
-            runValidators: true
-        }
+        donnees.archive
     );
 
     if (!camion) {

@@ -1,9 +1,8 @@
 const Remorque = require("../models/remorque.model");
+const remorqueRepository = require("../repositories/remorque.repository");
 
 async function creerRemorque(donnees = {}) {
-    await Remorque.init();
-
-    const remorque = await Remorque.create({
+    const remorque = await remorqueRepository.creerRemorque({
         immatriculation: donnees.immatriculation,
         type: donnees.type,
         kilometrageTotal: donnees.kilometrageTotal
@@ -13,23 +12,20 @@ async function creerRemorque(donnees = {}) {
 }
 
 async function listerRemorques() {
-    const remorques = await Remorque.find();
-
-    return remorques;
+    return remorqueRepository.listerRemorques();
 }
 
 async function obtenirRemorque(id) {
-    const remorque = await Remorque.findById(id);
+    const remorque = await remorqueRepository.obtenirRemorque(id);
 
     if (!remorque) {
-        const error = new Error("Remorque introuvable");
-        error.status = 404;
-        throw error;
+        const erreur = new Error("Remorque introuvable");
+        erreur.status = 404;
+        throw erreur;
     }
 
     return remorque;
 }
-
 
 async function modifierRemorque(id, donnees = {}) {
     for (const champ of Object.keys(donnees)) {
@@ -61,7 +57,7 @@ async function modifierRemorque(id, donnees = {}) {
         remorque.type = donnees.type;
     }
 
-    await remorque.save();
+    await remorqueRepository.enregistrerRemorque(remorque);
 
     return remorque;
 }
