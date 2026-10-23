@@ -6,19 +6,26 @@ const authRoutes = require("./routes/auth.routes");
 const gererErreur = require("./middlewares/error.middleware");
 const utilisateurRoutes = require("./routes/utilisateur.routes");
 const chauffeurRoutes = require("./routes/chauffeur.routes");
+const limiterRequetes = require("./middlewares/rate-limit.middleware");
+const ralentirRequetes = require("./middlewares/slow-down.middleware");
+const apiRoutes = require("./routes/api.routes");
+const annoncerFinVersion = require("./middlewares/sunset.middleware");
 
 const app = express();
 
+app.use(limiterRequetes);
+app.use(ralentirRequetes);
 app.use(express.json());
-
 app.use("/", homeRoutes);
-app.use("/api/camions", camionRoutes);
-app.use("/api/remorques", remorqueRoutes);
-app.use("/api/auth", authRoutes);
 
-app.use("/api/utilisateurs", utilisateurRoutes);
+// Première version : avec annonce de retrait.
+app.use("/api/v1", annoncerFinVersion, apiRoutes);
 
-app.use("/api/chauffeurs", chauffeurRoutes);
+// Deuxième version.
+app.use("/api/v2", apiRoutes);
+
+// Compatibilité avec tes anciennes requêtes Postman.
+app.use("/api", annoncerFinVersion, apiRoutes);
 
 app.use(gererErreur);
 

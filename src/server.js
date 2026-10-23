@@ -1,6 +1,6 @@
 require("dotenv").config();
+const { connecterRedis } = require("./config/redis");
 
-const app = require("./app");
 const connecterDB = require("./config/db");
 
 const PORT = process.env.PORT || 3000;
@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 3000;
 async function demarrerServeur() {
     try {
         await connecterDB();
+        await connecterRedis();
+
+        const app = require("./app");
 
         app.listen(PORT, () => {
             console.log(`Serveur démarré sur http://localhost:${PORT}`);
