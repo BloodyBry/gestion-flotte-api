@@ -10,21 +10,21 @@ const limiterRequetes = require("./middlewares/rate-limit.middleware");
 const ralentirRequetes = require("./middlewares/slow-down.middleware");
 const apiRoutes = require("./routes/api.routes");
 const annoncerFinVersion = require("./middlewares/sunset.middleware");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors({ origin: "http://localhost:5173" }));
 
 app.use(limiterRequetes);
 app.use(ralentirRequetes);
 app.use(express.json());
 app.use("/", homeRoutes);
 
-// Première version : avec annonce de retrait.
 app.use("/api/v1", annoncerFinVersion, apiRoutes);
 
-// Deuxième version.
 app.use("/api/v2", apiRoutes);
 
-// Compatibilité avec tes anciennes requêtes Postman.
 app.use("/api", annoncerFinVersion, apiRoutes);
 
 app.use(gererErreur);
